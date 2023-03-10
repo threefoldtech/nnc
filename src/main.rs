@@ -7,13 +7,13 @@ use tokio::net::TcpStream;
 #[derive(thiserror::Error, Debug)]
 enum Error {
     #[error("failed to switch namespace: {0}")]
-    NsSetError(nix::errno::Errno),
+    NsSet(nix::errno::Errno),
 
     #[error("failed to open namespace file: {0}")]
-    NsOpenError(std::io::Error),
+    NsOpen(std::io::Error),
 
     #[error("io error: {0}")]
-    IOError(#[from] std::io::Error),
+    IO(#[from] std::io::Error),
 }
 
 type Result<T> = std::result::Result<T, Error>;
@@ -33,9 +33,9 @@ struct Args {
 
 fn app(args: Args) -> Result<()> {
     let listener = TcpListener::bind(args.listen)?;
-    let ns = File::open(&args.namespace).map_err(Error::NsOpenError)?;
+    let ns = File::open(&args.namespace).map_err(Error::NsOpen)?;
     nix::sched::setns(ns.as_raw_fd(), nix::sched::CloneFlags::CLONE_NEWNET)
-        .map_err(Error::NsSetError)?;
+        .map_err(Error::NsSet)?;
 
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
@@ -49,7 +49,7 @@ async fn ncc(args: Args, listener: TcpListener) -> Result<()> {
     let listener = tokio::net::TcpListener::from_std(listener)?;
 
     while let Ok((incoming, _)) = listener.accept().await {
-        tokio::spawn(handle(incoming, args.target.clone()));
+        tokio::spawn(handle(incoming, args.target));
     }
 
     Ok(())
@@ -61,7 +61,7 @@ async fn handle(mut incoming: TcpStream, target: SocketAddr) -> Result<()> {
     tokio::io::copy_bidirectional(&mut incoming, &mut target)
         .await
         .map(|(_, _)| ())
-        .map_err(Error::IOError)
+        .map_err(Error::IO)
 }
 
 fn main() {
