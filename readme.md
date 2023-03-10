@@ -39,7 +39,7 @@ the service is listening online INSIDE the `priv` namespace.
 Now time to run `ncc`
 
 ```bash
-sudo ./target/debug/nnc -l '[::]:8080' -n /var/run/netns/priv -t 127.0.0.1:9000
+sudo nnc -l '[::]:8080' -n /var/run/netns/priv -t 127.0.0.1:9000
 ```
 
 This basically says, listen on port `8080` (on all interfaces) and once you get a connection, gateway it to `127.0.0.1:9000` inside the `priv` namespace.
