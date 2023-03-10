@@ -10,3 +10,7 @@ thiserror = "1.0"
 clap = { version = "4.1", features = ["derive"] }
 nix = { version = "0.26", features = ["sched"] }
 tokio = { version = "1.26", features = ["rt", "rt-multi-thread", "net", "io-util"] }
+
+
+[build-dependencies]
+git-version = "0.3"

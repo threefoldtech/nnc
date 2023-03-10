@@ -19,7 +19,7 @@ enum Error {
 type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[command(author, version = env!("GIT_VERSION"), about, long_about = None)]
 struct Args {
     #[clap(short, long, default_value = "[::]:8080")]
     listen: SocketAddr,
