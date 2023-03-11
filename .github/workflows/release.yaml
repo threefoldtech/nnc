@@ -8,7 +8,7 @@ name: Create Release
 
 jobs:
   build:
-    name: Releasing ncc
+    name: Releasing nnc
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
           args: --release --target=x86_64-unknown-linux-musl
       - name: Strip
         run: |
-          strip target/x86_64-unknown-linux-musl/release/ncc
+          strip target/x86_64-unknown-linux-musl/release/nnc
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -43,6 +43,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/x86_64-unknown-linux-musl/release/ncc
-          asset_name: ncc
+          asset_path: target/x86_64-unknown-linux-musl/release/nnc
+          asset_name: nnc
           asset_content_type: application/x-pie-executable

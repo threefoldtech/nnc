@@ -41,10 +41,10 @@ fn app(args: Args) -> Result<()> {
         .enable_all()
         .build()
         .unwrap()
-        .block_on(ncc(args, listener))
+        .block_on(nnc(args, listener))
 }
 
-async fn ncc(args: Args, listener: TcpListener) -> Result<()> {
+async fn nnc(args: Args, listener: TcpListener) -> Result<()> {
     listener.set_nonblocking(true)?;
     let listener = tokio::net::TcpListener::from_std(listener)?;
 
