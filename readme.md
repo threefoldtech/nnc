@@ -5,11 +5,11 @@
 ## Operation
 
 `nnc` listens on a certain listen address (ip, port) and accept connections. Once a connection is received the traffic
-is copied to a destination `--target` address. But target is dialed up from a different namespace than the network namespace nnc was started into
+is redirected to a destination `--target` address. But target is dialed up from a different namespace than the network namespace nnc was started in
 
 The idea behind `nnc` is that it start listening first in the source `namesapce` (this can be the host namespace). To start in a different namespace you can always use the `ip netns exec <ns> nnc ...`
 
-Once `nnc` successfully bind to the listening socket, it switches to the target namespace (provided by the `--namespace` flag). The any incoming connections from the `public` namespace can be redirected to the `--target` address that is reachable from the private namespace.
+Once `nnc` successfully bind to the listening socket, it switches to the target namespace (provided by the `--namespace` flag). Then any incoming connections from the `public` namespace can be redirected to the `--target` address that is reachable from the private namespace.
 
 ## Example
 
@@ -34,7 +34,7 @@ This will start an http server that listens on port 9000, and serving files from
 > Feel free to choose another directory to serve
 
 If you now open your browser and tried to connect to `localhost:9000` you will get NOTHING! (ERR_CONNECTION_REFUSED) simply because
-the service is listening online INSIDE the `priv` namespace.
+the service is listening only INSIDE the `priv` namespace.
 
 Now time to run `nnc`
 
@@ -44,7 +44,7 @@ sudo nnc -l '[::]:8080' -n /var/run/netns/priv -t 127.0.0.1:9000
 
 This basically says, listen on port `8080` (on all interfaces) and once you get a connection, gateway it to `127.0.0.1:9000` inside the `priv` namespace.
 
-> NOTE: the namespaces files locations is platform specific. But it's under /var/run/netns/priv on Arch, Ubuntu, and ZOS.
+> NOTE: the namespaces files locations is platform specific. But it's under /var/run/netns/ on Arch, Ubuntu, and ZOS.
 
 Now try to open `http://locahost:8080` in your browser
 
